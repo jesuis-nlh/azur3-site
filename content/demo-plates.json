@@ -1,0 +1,98 @@
+[
+  {
+    "name": "plate-01",
+    "width": 1600,
+    "height": 1067,
+    "tone": "#080818"
+  },
+  {
+    "name": "plate-02",
+    "width": 1200,
+    "height": 1600,
+    "tone": "#386898"
+  },
+  {
+    "name": "plate-03",
+    "width": 1400,
+    "height": 1400,
+    "tone": "#181838"
+  },
+  {
+    "name": "plate-04",
+    "width": 1800,
+    "height": 1013,
+    "tone": "#285878"
+  },
+  {
+    "name": "plate-05",
+    "width": 1600,
+    "height": 1067,
+    "tone": "#080818"
+  },
+  {
+    "name": "plate-06",
+    "width": 1200,
+    "height": 1500,
+    "tone": "#181838"
+  },
+  {
+    "name": "plate-07",
+    "width": 1600,
+    "height": 1067,
+    "tone": "#181838"
+  },
+  {
+    "name": "plate-08",
+    "width": 1400,
+    "height": 1750,
+    "tone": "#182858"
+  },
+  {
+    "name": "plate-09",
+    "width": 1800,
+    "height": 1013,
+    "tone": "#683878"
+  },
+  {
+    "name": "plate-10",
+    "width": 1600,
+    "height": 1200,
+    "tone": "#587888"
+  },
+  {
+    "name": "plate-11",
+    "width": 1200,
+    "height": 1600,
+    "tone": "#281848"
+  },
+  {
+    "name": "plate-12",
+    "width": 1600,
+    "height": 1067,
+    "tone": "#182848"
+  },
+  {
+    "name": "plate-13",
+    "width": 1400,
+    "height": 1400,
+    "tone": "#181838"
+  },
+  {
+    "name": "plate-14",
+    "width": 1600,
+    "height": 1067,
+    "tone": "#080818"
+  },
+  {
+    "name": "plate-15",
+    "width": 1200,
+    "height": 1600,
+    "tone": "#583868"
+  },
+  {
+    "name": "plate-16",
+    "width": 1800,
+    "height": 1013,
+    "tone": "#6898a8"
+  }
+]
