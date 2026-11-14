@@ -53,12 +53,13 @@ export default function SiteHeader() {
   return (
     <header className={`site-header${scrolled ? " is-scrolled" : ""}${open ? " is-open" : ""}`}>
       <div className="site-header__inner shell">
-        <Link href="/" className="brand" aria-label={`${site.className} — trang chủ`}>
+        <Link href="/" className="brand">
           <StarMark size={30} />
           <span className="brand__text">
             <span className="brand__name">{site.className}</span>
             <span className="brand__meta">{site.cohort.start}—{site.cohort.end}</span>
           </span>
+          <span className="sr-only"> — trang chủ</span>
         </Link>
 
         <nav className="primary-nav" aria-label="Điều hướng chính">

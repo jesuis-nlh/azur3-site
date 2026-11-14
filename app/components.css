@@ -48,10 +48,13 @@
 /* ---------- Header ---------- */
 .site-header { position: fixed; inset: 0 0 auto 0; z-index: 50; transition: background var(--d-med), border-color var(--d-med), backdrop-filter var(--d-med); border-bottom: 1px solid transparent; }
 .site-header.is-scrolled, .site-header.is-open { background: rgba(7, 8, 18, 0.72); border-color: var(--line); backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2); }
+/* backdrop-filter makes the header the containing block of the fixed menu panel,
+   collapsing it to 72px — so the open state uses a solid background instead */
+.site-header.is-open { backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--c-void); }
 .site-header__inner { display: flex; align-items: center; gap: var(--s-5); height: 72px; }
 .brand { display: inline-flex; align-items: center; gap: 0.7rem; text-decoration: none; color: var(--fg); flex: none; }
 .brand__text { display: grid; line-height: 1; }
-.brand__name { font-family: var(--font-display); font-size: 1.45rem; font-weight: 600; letter-spacing: 0.01em; }
+.brand__name { font-family: var(--font-display); font-size: 1.55rem; font-weight: 400; letter-spacing: 0.01em; }
 .brand__meta { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.14em; color: var(--fg-faint); margin-top: 3px; }
 .primary-nav { margin-inline: auto; display: none; }
 .primary-nav ul { display: flex; gap: clamp(0.6rem, 1.4vw, 1.6rem); list-style: none; margin: 0; padding: 0; }

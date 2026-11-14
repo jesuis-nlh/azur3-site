@@ -7,14 +7,15 @@ import { site } from "@/lib/site";
 
 const display = Cormorant_Garamond({
   subsets: ["latin", "vietnamese"],
-  weight: ["400", "500", "600"],
+  // one weight, roman + italic: the display face is the LCP on most pages, so it must stay light
+  weight: ["400"],
   style: ["normal", "italic"],
   variable: "--ff-display",
   display: "swap",
 });
 const body = Be_Vietnam_Pro({
   subsets: ["latin", "vietnamese"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["400", "500", "600"],
   variable: "--ff-body",
   display: "swap",
 });
@@ -23,6 +24,7 @@ const mono = JetBrains_Mono({
   weight: ["400"],
   variable: "--ff-mono",
   display: "swap",
+  preload: false, // only used for small coordinates; don't compete with the hero fonts
 });
 
 export const metadata: Metadata = {

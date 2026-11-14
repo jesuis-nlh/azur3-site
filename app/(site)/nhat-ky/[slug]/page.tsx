@@ -36,7 +36,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             <span>{a.author}</span><span className="dot" /><time dateTime={a.publishedAt}>{formatIso(a.publishedAt)}</time><span className="dot" /><span>{readingMinutes(a.body)} phút đọc</span><DemoBadge item={a} />
           </div>
         </header>
-        {a.cover ? <div className="shell article__cover" data-reveal="mask"><Plate asset={a.cover} ratio="21 / 9" sizes="100vw" priority /></div> : null}
+        {a.cover ? <div className="shell article__cover"><Plate asset={a.cover} ratio="21 / 9" sizes="100vw" priority /></div> : null}
         <div className="shell article__layout">
           {toc.length > 1 ? (
             <nav className="article__toc" aria-label="Mục lục bài viết">

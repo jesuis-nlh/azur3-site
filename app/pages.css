@@ -22,7 +22,7 @@
 /* Orrery */
 .orrery { position: relative; }
 .orrery svg { width: 100%; height: auto; overflow: visible; }
-.orrery__center { font-family: var(--font-display); font-size: 44px; font-weight: 600; fill: var(--c-void); letter-spacing: 0.02em; }
+.orrery__center { font-family: var(--font-display); font-size: 46px; font-weight: 400; fill: var(--c-void); letter-spacing: 0.02em; }
 .orrery__year { font-family: var(--font-mono); font-size: 13px; fill: var(--fg-faint); letter-spacing: 0.08em; }
 .orrery__star { cursor: pointer; }
 .orrery__star:focus-visible { outline: none; }
@@ -234,7 +234,7 @@
 .lightbox__bar p { margin: 0; }
 .lightbox__tools { display: flex; gap: var(--s-1); }
 .lightbox__figure { position: relative; display: grid; place-items: center; min-height: 0; padding: 0 var(--s-4); }
-.lightbox__figure img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 2px; opacity: 0; transform: scale(0.985); transition: opacity 500ms var(--ease-out), transform 700ms var(--ease-out); box-shadow: 0 40px 120px -20px rgba(0, 0, 0, 0.9); }
+.lightbox__figure img { max-width: 100%; max-height: calc(100dvh - 150px); width: auto; height: auto; object-fit: contain; border-radius: 2px; opacity: 0; transform: scale(0.985); transition: opacity 500ms var(--ease-out), transform 700ms var(--ease-out); box-shadow: 0 40px 120px -20px rgba(0, 0, 0, 0.9); }
 .lightbox__figure img.is-loaded { opacity: 1; transform: none; }
 .lightbox__progress { position: absolute; left: var(--s-4); right: var(--s-4); bottom: -10px; height: 1px; background: var(--memory); transform-origin: left; animation: grow linear forwards; }
 @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
@@ -245,9 +245,10 @@
 .lightbox__info { padding: var(--s-4) var(--s-5) var(--s-5); display: grid; gap: var(--s-2); border-top: 1px solid var(--line); background: rgba(7, 8, 18, 0.7); }
 .lightbox__info p { margin: 0; }
 .lightbox__caption { font-family: var(--font-display); font-size: 1.25rem; line-height: 1.35; }
-.lightbox__info dl { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-5); margin: 0; font-size: 0.82rem; }
+.lightbox__info dl { display: grid; grid-template-columns: auto 1fr; gap: 4px var(--s-4); margin: 0; font-size: 0.82rem; }
+.lightbox__info .badge { justify-self: start; }
 .lightbox__info dt { color: var(--fg-faint); }
-.lightbox__info dd { margin: 0 0 0 -0.8rem; color: var(--fg-muted); }
+.lightbox__info dd { margin: 0; color: var(--fg-muted); }
 .lightbox__keys { display: none; }
 @media (min-width: 900px) {
   .lightbox__stage.has-info { grid-template-columns: 1fr 320px; grid-template-rows: auto 1fr; }
@@ -255,6 +256,7 @@
   .lightbox__stage.has-info .lightbox__info { border-top: 0; border-left: 1px solid var(--line); align-content: end; }
   .lightbox__stage.has-info .lightbox__nav--next { right: calc(320px + var(--s-4)); }
   .lightbox__keys { display: block; margin-top: var(--s-4) !important; }
+  .lightbox__stage.has-info .lightbox__figure img { max-height: calc(100dvh - 110px); }
 }
 @media (max-width: 600px) { .lightbox__nav { top: auto; bottom: 30%; width: 44px; height: 44px; } }
 
@@ -302,7 +304,8 @@ a.person-card:hover { border-color: var(--line-strong); background: rgba(244, 24
 .person-card__star { grid-row: span 2; width: 12px; height: 12px; border-radius: 50%; background: var(--c-star); box-shadow: 0 0 10px rgba(99, 217, 255, 0.8); }
 .person-card__star.is-limited { background: var(--fg-faint); box-shadow: none; width: 7px; height: 7px; margin-inline: 2.5px; }
 .person-card__name { font-family: var(--font-display); font-size: 1.15rem; line-height: 1.2; }
-.person-card--limited { opacity: 0.6; }
+.person-card--limited { border-style: dashed; }
+.person-card--limited .person-card__name { color: var(--fg-muted); }
 .person-page__head { display: grid; gap: var(--s-6); margin-top: var(--s-6); align-items: end; }
 .person-page__portrait { width: min(220px, 50vw); }
 .person-page__star { display: block; aspect-ratio: 4 / 5; border-radius: var(--radius); border: 1px solid var(--line); background: radial-gradient(circle at 50% 45%, #fff 0 3px, rgba(99, 217, 255, 0.5) 4px, rgba(80, 50, 140, 0.25) 35%, transparent 70%); }
