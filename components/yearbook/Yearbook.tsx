@@ -31,10 +31,27 @@ export default function Yearbook({ spreads }: { spreads: Spread[] }) {
   const pageRef = useRef<HTMLDivElement>(null);
   const touch = useRef<number | null>(null);
 
+  // Read #trang-N on load and on history navigation. `popstate` is used rather
+  // than `hashchange`: it fires before the App Router restores its own URL, so
+  // it still sees the hash the visitor navigated to.
   useEffect(() => {
-    const m = window.location.hash.match(/trang-(\d+)/);
-    if (m) setI(Math.min(spreads.length - 1, Math.max(0, Number(m[1]) - 1)));
+    const fromHash = () => {
+      const m = window.location.hash.match(/trang-(\d+)/);
+      if (!m) return;
+      const n = Math.min(spreads.length - 1, Math.max(0, Number(m[1]) - 1));
+      setI((cur) => { if (n !== cur) setDir(n > cur ? 1 : -1); return n; });
+    };
+    fromHash();
+    window.addEventListener("popstate", fromHash);
+    return () => window.removeEventListener("popstate", fromHash);
   }, [spreads.length]);
+
+  // The URL is derived from the page (keeps it shareable). Running as an effect
+  // means it lands after any router URL restoration in the same tick.
+  useEffect(() => {
+    const want = `#trang-${i + 1}`;
+    if (window.location.hash !== want) window.history.replaceState(window.history.state, "", want);
+  }, [i]);
 
   const go = useCallback((n: number, focus = false) => {
     const next = Math.min(spreads.length - 1, Math.max(0, n));
@@ -43,7 +60,6 @@ export default function Yearbook({ spreads }: { spreads: Spread[] }) {
       setDir(next > cur ? 1 : -1);
       return next;
     });
-    history.replaceState(null, "", `#trang-${next + 1}`);
     setIndexOpen(false);
     if (focus) requestAnimationFrame(() => pageRef.current?.focus());
   }, [spreads.length]);

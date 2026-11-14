@@ -98,7 +98,7 @@
 @media (min-width: 900px) { .site-footer__top { grid-template-columns: 1.2fr 1fr; } }
 
 /* ---------- Page hero (inner pages) ---------- */
-.page-hero { position: relative; padding-top: calc(72px + clamp(3.5rem, 2rem + 6vw, 8rem)); padding-bottom: clamp(2.5rem, 2rem + 3vw, 5rem); }
+.page-hero { position: relative; overflow-x: clip; padding-top: calc(72px + clamp(3.5rem, 2rem + 6vw, 8rem)); padding-bottom: clamp(2.5rem, 2rem + 3vw, 5rem); }
 .page-hero__grid { display: grid; gap: var(--s-6); align-items: end; }
 .page-hero__title { margin-top: var(--s-4); }
 .page-hero__aside { display: grid; gap: var(--s-3); align-content: end; }

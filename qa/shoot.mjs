@@ -16,8 +16,8 @@ for (const w of widthsArg.split(",").map(Number)) {
   await page.goto(base + path, { waitUntil: "load" });
   // reveal everything + let entrance animations finish
   await page.evaluate(async () => {
-    for (let y = 0; y < document.body.scrollHeight; y += 600) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 60)); }
-    window.scrollTo(0, 0);
+    for (let y = 0; y < document.body.scrollHeight; y += 600) { window.scrollTo({ top: y, behavior: "instant" }); await new Promise((r) => setTimeout(r, 90)); }
+    window.scrollTo({ top: 0, behavior: "instant" });
   });
   await page.waitForTimeout(1600);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);

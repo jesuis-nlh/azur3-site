@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { foldVietnamese } from "@/lib/text";
+import Glyph from "@/components/ui/Glyph";
 
 export interface PersonStar {
   id: string;
@@ -112,6 +113,7 @@ export default function PeopleConstellation({ people, withheld }: { people: Pers
       <div className="directory">
         <div className="directory__controls">
           <label className="timeline__search">
+            <Glyph name="search" size={16} />
             <span className="sr-only">Tìm theo tên</span>
             <input className="input" type="search" placeholder="Tìm theo tên hiển thị" value={q} onChange={(e) => setQ(e.target.value)} />
           </label>

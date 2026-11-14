@@ -73,7 +73,7 @@
 
 /* ---------- 2. Base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: 6rem; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: 6rem; overflow-x: clip; }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 body {
   margin: 0;
@@ -276,9 +276,11 @@ a:hover .plate__frame img, .plate--interactive:hover .plate__frame img { transfo
 /* ---------- 6. Motion primitives ---------- */
 .js [data-reveal] { opacity: 0; transform: translateY(26px); transition: opacity var(--d-slow) var(--ease-out), transform var(--d-slow) var(--ease-out); transition-delay: var(--delay, 0ms); }
 .js [data-reveal="fade"] { transform: none; }
-.js [data-reveal="mask"] { opacity: 1; transform: none; clip-path: inset(0 0 100% 0); transition: clip-path 1.3s var(--ease-out); transition-delay: var(--delay, 0ms); }
+/* mask: the wrapper stays unclipped (IntersectionObserver ignores clipped-away boxes); its child is unveiled */
+.js [data-reveal="mask"] { opacity: 1; transform: none; }
+.js [data-reveal="mask"] > * { clip-path: inset(0 0 100% 0); transition: clip-path 1.3s var(--ease-out); transition-delay: var(--delay, 0ms); }
 .js [data-reveal].is-in { opacity: 1; transform: none; }
-.js [data-reveal="mask"].is-in { clip-path: inset(0 0 0 0); }
+.js [data-reveal="mask"].is-in > * { clip-path: inset(0 0 0 0); }
 
 .line-draw { stroke-dasharray: var(--len, 1200); stroke-dashoffset: var(--len, 1200); transition: stroke-dashoffset 2.2s var(--ease-io); }
 .is-in .line-draw, .line-draw.is-in { stroke-dashoffset: 0; }
@@ -296,7 +298,7 @@ a:hover .plate__frame img, .plate--interactive:hover .plate__frame img { transfo
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; transition-duration: 1ms !important; transition-delay: 0ms !important; }
-  .js [data-reveal] { opacity: 1; transform: none; clip-path: none; }
+  .js [data-reveal], .js [data-reveal="mask"] > * { opacity: 1; transform: none; clip-path: none; }
   .rise > span { transform: none; }
   .line-draw { stroke-dashoffset: 0; }
 }
