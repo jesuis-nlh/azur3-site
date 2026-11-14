@@ -3,10 +3,6 @@ import { Be_Vietnam_Pro, Cormorant_Garamond, JetBrains_Mono } from "next/font/go
 import "./globals.css";
 import "./components.css";
 import "./pages.css";
-import CosmicBackground from "@/components/cosmic/CosmicBackground";
-import Interactions from "@/components/cosmic/Interactions";
-import SiteHeader from "@/components/layout/SiteHeader";
-import SiteFooter from "@/components/layout/SiteFooter";
 import { site } from "@/lib/site";
 
 const display = Cormorant_Garamond({
@@ -50,11 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <a className="skip-link" href="#noi-dung">Chuyển đến nội dung</a>
-        <CosmicBackground />
-        <SiteHeader />
-        <main id="noi-dung" tabIndex={-1}>{children}</main>
-        <SiteFooter />
-        <Interactions />
+        {children}
       </body>
     </html>
   );

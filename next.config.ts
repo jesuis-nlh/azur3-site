@@ -11,7 +11,7 @@ const config: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   images: { formats: ["image/avif", "image/webp"] },
-  experimental: { serverActions: { bodySizeLimit: "2mb" } },
+  experimental: { serverActions: { bodySizeLimit: "60mb" } },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

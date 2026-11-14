@@ -5,7 +5,7 @@ import path from "node:path";
 import sharp from "sharp";
 import { UPLOAD_DIR } from "./store";
 import { uid } from "./text";
-import type { SubmissionFile } from "./types";
+import type { MediaAsset, SubmissionFile } from "./types";
 
 export const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
 export const VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/webm"];
@@ -55,3 +55,20 @@ export async function storeUpload(file: File, folder: string): Promise<Submissio
   }
   return out;
 }
+
+/** Public asset URLs always point at EXIF-stripped variants, never the original. */
+export function assetFromUpload(sf: SubmissionFile, alt: string, extra: Partial<MediaAsset> = {}): MediaAsset {
+  const base = `/media/u/${sf.path.replace(/\/original[^/]*$/, "")}`;
+  return {
+    id: sf.id,
+    src: `${base}/preview.webp`,
+    preview: `${base}/preview.webp`,
+    thumb: `${base}/thumb.webp`,
+    width: sf.width ?? 1600,
+    height: sf.height ?? 1200,
+    alt,
+    sha256: sf.sha256,
+    ...extra,
+  };
+}
+
