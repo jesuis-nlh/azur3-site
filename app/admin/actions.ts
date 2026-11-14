@@ -10,7 +10,7 @@ import { adminConfigured, createSessionToken, safeEqual, SESSION_COOKIE, SESSION
 import { mutate, readDb, DATA_DIR, StoreWriteError } from "@/lib/store";
 import { SCHEMAS, isCollection } from "@/lib/admin-schema";
 import { applyForm } from "@/lib/admin-form";
-import { assetFromUpload, storeUpload, IMAGE_TYPES, validateFile } from "@/lib/uploads";
+import { assetFromUpload, effectiveType, storeUpload, IMAGE_TYPES, validateFile } from "@/lib/uploads";
 import { uid } from "@/lib/text";
 import type { Album, ArchiveDB, BaseRecord, ImportBatch, ImportItem, MediaAsset } from "@/lib/types";
 
@@ -83,7 +83,7 @@ export async function saveRecord(collection: string, id: string, _: SaveState, f
         if (form.get(`${f.name}__remove`) === "on") delete draft[f.name];
         if (file instanceof File && file.size > 0) {
           const err = validateFile(file);
-          if (err || !IMAGE_TYPES.includes(file.type)) { errors[f.name] = err ?? "Chỉ nhận ảnh"; continue; }
+          if (err || !IMAGE_TYPES.includes(effectiveType(file))) { errors[f.name] = err ?? "Chỉ nhận ảnh"; continue; }
           const sf = await storeUpload(file, `library/${collection}`);
           draft[f.name] = assetFromUpload(sf, String(form.get(`${f.name}__alt`) || draft.title || ""));
         } else if (draft[f.name] && typeof form.get(`${f.name}__alt`) === "string") {
@@ -105,7 +105,7 @@ export async function saveRecord(collection: string, id: string, _: SaveState, f
         for (const file of form.getAll("newAssets")) {
           if (!(file instanceof File) || file.size === 0) continue;
           const err = validateFile(file);
-          if (err || !IMAGE_TYPES.includes(file.type)) { errors.newAssets = err ?? "Chỉ nhận ảnh"; continue; }
+          if (err || !IMAGE_TYPES.includes(effectiveType(file))) { errors.newAssets = err ?? "Chỉ nhận ảnh"; continue; }
           const sf = await storeUpload(file, `library/albums`);
           kept.push(assetFromUpload(sf, `Ảnh trong album ${draft.title ?? ""}`.trim()));
         }

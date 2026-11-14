@@ -84,6 +84,8 @@ body {
   font-size: var(--t-body);
   line-height: 1.7;
   font-feature-settings: "kern", "liga";
+  /* Cormorant defaults to old-style figures ("1" reads as "I"); an archive of dates needs lining figures */
+  font-variant-numeric: lining-nums;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
 }

@@ -13,8 +13,20 @@ export const MAX_IMAGE_BYTES = 25 * 1024 * 1024;
 export const MAX_VIDEO_BYTES = 200 * 1024 * 1024;
 export const MAX_FILES = 20;
 
+const EXT_TYPES: Record<string, string> = {
+  ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp", ".heic": "image/heic", ".heif": "image/heif",
+  ".mp4": "video/mp4", ".mov": "video/quicktime", ".webm": "video/webm",
+};
+
+/** Browsers sometimes send "" or application/octet-stream (e.g. HEIC on Windows): fall back to the extension. */
+export function effectiveType(f: { type: string; name: string }): string {
+  if (f.type && f.type !== "application/octet-stream") return f.type;
+  return EXT_TYPES[path.extname(f.name).toLowerCase()] ?? f.type;
+}
+
 export function validateFile(f: { type: string; size: number; name: string }): string | null {
-  const isImg = IMAGE_TYPES.includes(f.type), isVid = VIDEO_TYPES.includes(f.type);
+  const type = effectiveType(f);
+  const isImg = IMAGE_TYPES.includes(type), isVid = VIDEO_TYPES.includes(type);
   if (!isImg && !isVid) return `“${f.name}”: định dạng không được hỗ trợ (chỉ nhận JPG, PNG, WebP, HEIC, MP4, MOV, WebM).`;
   if (isImg && f.size > MAX_IMAGE_BYTES) return `“${f.name}”: ảnh vượt quá 25 MB.`;
   if (isVid && f.size > MAX_VIDEO_BYTES) return `“${f.name}”: video vượt quá 200 MB — hãy gửi liên kết thay vì tải file.`;
@@ -36,10 +48,10 @@ export async function storeUpload(file: File, folder: string): Promise<Submissio
   await fs.mkdir(dir, { recursive: true });
   await fs.writeFile(path.join(dir, `original${ext}`), buf);
   const out: SubmissionFile = {
-    id, originalName: file.name.slice(0, 200), mime: file.type, size: file.size,
+    id, originalName: file.name.slice(0, 200), mime: effectiveType(file), size: file.size,
     path: path.posix.join(folder, id, `original${ext}`), sha256,
   };
-  if (IMAGE_TYPES.includes(file.type)) {
+  if (IMAGE_TYPES.includes(effectiveType(file))) {
     try {
       const img = sharp(buf, { failOn: "none" }).rotate();
       const meta = await img.metadata();

@@ -2,8 +2,8 @@
  * Pure FormData → record mapping for the schema-driven editor.
  * Kept free of server/framework imports so it is unit-testable.
  */
-import type { FieldDef } from "./admin-schema";
-import { slugify } from "./text";
+import type { FieldDef } from "./admin-schema.ts";
+import { slugify } from "./text.ts";
 
 type Rec = Record<string, unknown>;
 
