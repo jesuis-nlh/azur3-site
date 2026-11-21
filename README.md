@@ -46,6 +46,7 @@ npm run dev                    # http://localhost:3000 — admin at /admin
 ## Documentation
 
 - `docs/ARCHITECTURE.md` — stack, data model, storage, security, deployment options
+- `docs/DEPLOY.md` — triển khai lên Vercel (bản xem trước, chỉ đọc) hoặc máy chủ có ổ đĩa (vận hành thật)
 - `docs/INGESTION.md` — importing photo folders and Facebook exports
 - `docs/OPERATIONS.md` — running the archive: moderation, removals, backups
 - `docs/QA-REPORT.md` — what was tested, measured results, scorecard, limitations

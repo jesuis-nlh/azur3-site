@@ -20,6 +20,7 @@ const DB_FILE = path.join(DATA_DIR, "archive.json");
 
 let cache: { db: ArchiveDB; mtime: number } | null = null;
 let queue: Promise<unknown> = Promise.resolve();
+let warned = false;
 
 export class StoreWriteError extends Error {}
 
@@ -35,7 +36,14 @@ export async function readDb(): Promise<ArchiveDB> {
     cache = { db, mtime: stat.mtimeMs };
     return db;
   } catch (err: unknown) {
-    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+    // No archive yet, or a store this host cannot reach (read-only / serverless / bad DATA_DIR):
+    // serve the bundled seed so public pages keep working. Corrupt JSON still throws.
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code && ["ENOENT", "ENOTDIR", "EACCES", "EPERM", "EROFS"].includes(code)) {
+      if (code !== "ENOENT" && !warned) {
+        warned = true;
+        console.warn(`[store] ${code} reading ${DB_FILE}; serving the bundled seed (read-only).`);
+      }
       if (!cache) cache = { db: clone(seed), mtime: -1 };
       return cache.db;
     }
@@ -74,4 +82,25 @@ export function uploadPath(rel: string): string {
   const full = path.resolve(UPLOAD_DIR, rel);
   if (!full.startsWith(path.resolve(UPLOAD_DIR) + path.sep)) throw new Error("invalid path");
   return full;
+}
+
+let writableCache: { at: number; ok: boolean } | null = null;
+/** Whether this deployment can persist changes (false on read-only hosts such as serverless). */
+export async function storeWritable(): Promise<boolean> {
+  if (writableCache && Date.now() - writableCache.at < 60_000) return writableCache.ok;
+  let ok = true;
+  try {
+    // bounded: a filesystem that hangs instead of failing must not hang the page
+    await Promise.race([
+      (async () => {
+        await fs.mkdir(DATA_DIR, { recursive: true });
+        await fs.access(DATA_DIR, fs.constants.W_OK);
+      })(),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 1000)),
+    ]);
+  } catch {
+    ok = false;
+  }
+  writableCache = { at: Date.now(), ok };
+  return ok;
 }

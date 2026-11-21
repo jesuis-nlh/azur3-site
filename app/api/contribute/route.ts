@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { mutate, StoreWriteError } from "@/lib/store";
+import { mutate, storeWritable, StoreWriteError } from "@/lib/store";
 import { safeEqual } from "@/lib/session";
 import { MAX_FILES, storeUpload, validateFile } from "@/lib/uploads";
 import { uid } from "@/lib/text";
@@ -24,6 +24,9 @@ function str(v: FormDataEntryValue | null, max: number) {
 }
 
 export async function POST(req: NextRequest) {
+  if (!(await storeWritable())) {
+    return NextResponse.json({ error: "Kho lưu trữ đang ở chế độ chỉ đọc nên chưa nhận bài gửi." }, { status: 503 });
+  }
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
   if (rateLimited(ip)) return NextResponse.json({ error: "Bạn gửi quá nhanh. Hãy thử lại sau vài phút." }, { status: 429 });
 

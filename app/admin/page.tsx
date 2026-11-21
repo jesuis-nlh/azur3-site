@@ -1,7 +1,7 @@
 import Link from "next/link";
 import AdminShell from "@/components/admin/AdminShell";
 import { requireAdmin } from "@/lib/auth";
-import { readDb, DATA_DIR } from "@/lib/store";
+import { readDb, DATA_DIR, storeWritable } from "@/lib/store";
 import { isPublic } from "@/lib/governance";
 import { SCHEMAS, COLLECTIONS } from "@/lib/admin-schema";
 import type { BaseRecord } from "@/lib/types";
@@ -18,8 +18,7 @@ export default async function Dashboard() {
   const inbox = await fs.readdir(path.join(DATA_DIR, "inbox")).then((f) => f.filter((x) => x.endsWith(".json"))).catch(() => [] as string[]);
   const reviewQueue = COLLECTIONS.flatMap((c) => (db[c] as unknown as BaseRecord[]).filter((r) => r.review !== "verified" && r.status !== "archived" && !r.demo).map((r) => ({ c, r })));
   const demoCount = COLLECTIONS.reduce((n, c) => n + (db[c] as unknown as BaseRecord[]).filter((r) => r.demo).length, 0);
-  let writable = true;
-  try { await fs.mkdir(DATA_DIR, { recursive: true }); await fs.access(DATA_DIR, fs.constants.W_OK); } catch { writable = false; }
+  const writable = await storeWritable();
 
   return (
     <AdminShell pending={pending.length}>
