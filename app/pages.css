@@ -473,7 +473,7 @@ a.person-card:hover { border-color: var(--line-strong); background: rgba(244, 24
 .search-results { list-style: none; margin: 0; padding: 0; display: grid; }
 .search-results li { border-bottom: 1px solid var(--line); }
 .search-hit { display: grid; grid-template-columns: 72px 1fr; gap: var(--s-4); padding: var(--s-4) 0; align-items: center; }
-.search-hit > span { display: grid; gap: 4px; }
+.search-hit__body { display: grid; gap: 4px; }
 .search-hit__thumb { width: 72px; height: 72px; object-fit: cover; border-radius: 6px; }
 .search-hit__thumb--star { display: block; background: radial-gradient(circle, #fff 0 2px, rgba(99, 217, 255, 0.4) 3px, transparent 60%), rgba(23, 21, 58, 0.5); border: 1px solid var(--line); }
 .search-hit__snippet { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }

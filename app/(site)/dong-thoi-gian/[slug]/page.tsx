@@ -64,7 +64,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                 <Link key={a.id} href={`/ky-uc/${a.slug}`} className="album-card card-link" data-reveal data-cursor="view">
                   {cover ? <Plate asset={cover} caption={false} ratio="4 / 3" sizes="(min-width: 900px) 33vw, 100vw" /> : null}
                   <span className="card-meta"><span>{a.assets.length} ảnh</span><DemoBadge item={a} /></span>
-                  <span className="h3 card-title">{a.title}</span>
+                  <h3 className="h3 card-title">{a.title}</h3>
                 </Link>
               );
             })}

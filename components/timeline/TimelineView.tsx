@@ -99,20 +99,20 @@ export default function TimelineView({
                           <span className="num tl-event__month">{e.month}</span>
                           <span className="coord">{e.year}</span>
                         </span>
-                        <span className="tl-event__main">
+                        <div className="tl-event__main">
                           <span className="card-meta">
                             <span>{e.categoryLabel}</span>
                             {e.milestone ? <><span className="dot" /><span className="tl-event__flag">Cột mốc</span></> : null}
                             {e.demo ? <span className="badge badge--demo">Mẫu</span> : null}
                           </span>
-                          <span className="h3 card-title">{e.title}</span>
+                          <h3 className="h3 card-title">{e.title}</h3>
                           <span className="tl-event__desc">{e.description}</span>
                           <span className="tl-event__counts">
                             {e.counts.photos ? <span><Glyph name="photo" size={14} /> {e.counts.photos} ảnh</span> : null}
                             {e.counts.videos ? <span><Glyph name="video" size={14} /> {e.counts.videos} video</span> : null}
                             {e.counts.articles ? <span><Glyph name="article" size={14} /> {e.counts.articles} bài</span> : null}
                           </span>
-                        </span>
+                        </div>
                       </Link>
                     </li>
                   ))}

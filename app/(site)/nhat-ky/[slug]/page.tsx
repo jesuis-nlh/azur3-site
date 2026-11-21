@@ -53,7 +53,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       {related.length ? (
         <section className="section shell" aria-labelledby="related-h">
           <h2 id="related-h" className="h2" style={{ marginBottom: "var(--s-6)" }}>Đọc tiếp</h2>
-          <div className="article-grid">{related.map((r, i) => <ArticleCard key={r.id} a={r} i={i} />)}</div>
+          <div className="article-grid">{related.map((r, i) => <ArticleCard key={r.id} a={r} i={i} level={3} />)}</div>
         </section>
       ) : null}
     </>

@@ -52,7 +52,7 @@ export default async function VideoPage({ params }: { params: Promise<{ slug: st
             <h2 className="h3" style={{ marginBottom: "var(--s-5)" }}>Thước phim khác</h2>
             <ul className="video-grid">
               {others.map((o) => (
-                <li key={o.id}><Link href={`/thuoc-phim/${o.slug}`} className="video-card card-link"><span className="h3 card-title">{o.title}</span><span className="card-meta"><span className="coord">{formatFuzzy(o.eventDate)}</span></span></Link></li>
+                <li key={o.id}><Link href={`/thuoc-phim/${o.slug}`} className="video-card card-link"><h3 className="h3 card-title">{o.title}</h3><span className="card-meta"><span className="coord">{formatFuzzy(o.eventDate)}</span></span></Link></li>
               ))}
             </ul>
           </section>

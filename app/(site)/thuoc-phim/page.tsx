@@ -46,7 +46,7 @@ export default async function VideosPage({ searchParams }: { searchParams: Promi
               </span>
               <span className="video-lead__meta">
                 <span className="card-meta"><span>{VIDEO_CATEGORIES[lead.category]}</span><span className="dot" /><span className="coord">{formatFuzzy(lead.eventDate)}</span>{duration(lead.durationSec) ? <><span className="dot" /><span>{duration(lead.durationSec)}</span></> : null}<DemoBadge item={lead} /></span>
-                <span className="h1 card-title">{lead.title}</span>
+                <h2 className="h1 card-title">{lead.title}</h2>
                 {lead.description ? <span className="muted">{lead.description}</span> : null}
               </span>
             </Link>
@@ -59,7 +59,7 @@ export default async function VideosPage({ searchParams }: { searchParams: Promi
                       <span className="video-card__play" aria-hidden="true"><Glyph name="play" size={18} /></span>
                     </span>
                     <span className="card-meta"><span>{VIDEO_CATEGORIES[v.category]}</span><span className="dot" /><span className="coord">{formatFuzzy(v.eventDate)}</span><DemoBadge item={v} /></span>
-                    <span className="h3 card-title">{v.title}</span>
+                    <h2 className="h3 card-title">{v.title}</h2>
                   </Link>
                 </li>
               ))}

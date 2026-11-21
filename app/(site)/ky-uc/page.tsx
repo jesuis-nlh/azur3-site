@@ -65,7 +65,7 @@ export default async function MemoriesPage({ searchParams }: { searchParams: Pro
                     <span className="card-meta">
                       <span className="coord">{formatFuzzy(a.eventDate)}</span><span className="dot" /><span>{a.assets.length} ảnh</span><span className="dot" /><span>{ALBUM_TOPICS[a.topic]}</span><DemoBadge item={a} />
                     </span>
-                    <span className="h2 card-title">{a.title}</span>
+                    <h3 className="h2 card-title">{a.title}</h3>
                   </Link>
                 );
               })}

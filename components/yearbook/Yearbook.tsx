@@ -110,7 +110,7 @@ export default function Yearbook({ spreads }: { spreads: Spread[] }) {
           touch.current = null;
         }}
       >
-        <div key={s.id} ref={pageRef} tabIndex={-1} className={`yearbook__spread turn-${dir > 0 ? "next" : "prev"}`} aria-roledescription="trang" aria-label={`${s.chapter}: ${s.title}`}>
+        <div key={s.id} ref={pageRef} tabIndex={-1} className={`yearbook__spread turn-${dir > 0 ? "next" : "prev"}`} role="group" aria-roledescription="trang" aria-label={`${s.chapter}: ${s.title}`}>
           <div className="yearbook__page yearbook__page--left">
             {s.image ? (
               <figure className="plate yearbook__figure">
@@ -134,7 +134,7 @@ export default function Yearbook({ spreads }: { spreads: Spread[] }) {
             ) : (
               <div className="yearbook__emblem" aria-hidden="true"><span>{s.chapter.match(/^[IVX]+/)?.[0] ?? "✦"}</span></div>
             )}
-            <span className="yearbook__folio coord">{String(i * 2 + 1).padStart(3, "0")}</span>
+            <span className="yearbook__folio coord" aria-hidden="true">{String(i * 2 + 1).padStart(3, "0")}</span>
           </div>
           <div className="yearbook__page yearbook__page--right">
             <p className="eyebrow eyebrow--memory">{s.kicker}</p>
@@ -146,7 +146,7 @@ export default function Yearbook({ spreads }: { spreads: Spread[] }) {
               </ul>
             ) : null}
             {s.cta ? <Link className="link-arrow" href={s.cta.href}>{s.cta.label} <Glyph name="arrow" size={16} /></Link> : null}
-            <span className="yearbook__folio coord">{String(i * 2 + 2).padStart(3, "0")}</span>
+            <span className="yearbook__folio coord" aria-hidden="true">{String(i * 2 + 2).padStart(3, "0")}</span>
           </div>
         </div>
       </div>

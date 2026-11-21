@@ -41,11 +41,11 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                   <li key={h.href}>
                     <Link href={h.href} className="search-hit card-link">
                       {h.thumb ? <img src={h.thumb} alt="" loading="lazy" className="search-hit__thumb" /> : <span className="search-hit__thumb search-hit__thumb--star" aria-hidden="true" />}
-                      <span>
+                      <div className="search-hit__body">
                         <span className="card-meta"><span>{h.typeLabel}</span>{h.meta ? <><span className="dot" /><span>{h.meta}</span></> : null}</span>
-                        <span className="h3 card-title">{h.title}</span>
+                        <h2 className="h3 card-title">{h.title}</h2>
                         {h.snippet ? <span className="small muted search-hit__snippet">{h.snippet}</span> : null}
-                      </span>
+                      </div>
                     </Link>
                   </li>
                 ))}

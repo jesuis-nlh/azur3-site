@@ -155,7 +155,7 @@ export default async function Home() {
                     {cover ? <Plate asset={cover} caption={false} ratio={i === 0 ? "4 / 5" : i === 3 ? "16 / 10" : "1 / 1"} sizes="(min-width: 900px) 45vw, 100vw" /> : null}
                     <span className="feature-albums__meta">
                       <span className="coord">{formatFuzzy(a.eventDate)} · {a.assets.length} ảnh</span>
-                      <span className="h3 card-title">{a.title}</span>
+                      <h3 className="h3 card-title">{a.title}</h3>
                       <DemoBadge item={a} />
                     </span>
                   </Link>
@@ -217,7 +217,7 @@ export default async function Home() {
               <Link href={`/nhat-ky/${lead.slug}`} className="journal-lead__main card-link" data-reveal>
                 {lead.cover ? <Plate asset={lead.cover} caption={false} ratio="16 / 10" sizes="(min-width: 900px) 58vw, 100vw" /> : null}
                 <span className="card-meta"><span>{ARTICLE_CATEGORIES[lead.category]}</span><span className="dot" /><span>{readingMinutes(lead.body)} phút đọc</span><DemoBadge item={lead} /></span>
-                <span className="h2 card-title">{lead.title}</span>
+                <h3 className="h2 card-title">{lead.title}</h3>
                 {lead.subtitle ? <span className="muted journal-lead__sub">{lead.subtitle}</span> : null}
               </Link>
               <ol className="journal-lead__list">
@@ -225,10 +225,10 @@ export default async function Home() {
                   <li key={a.id} data-reveal style={{ "--delay": `${i * 90}ms` } as React.CSSProperties}>
                     <Link href={`/nhat-ky/${a.slug}`} className="card-link journal-row">
                       <span className="coord">{String(i + 2).padStart(2, "0")}</span>
-                      <span>
+                      <div>
                         <span className="card-meta"><span>{ARTICLE_CATEGORIES[a.category]}</span><DemoBadge item={a} /></span>
-                        <span className="h3 card-title">{a.title}</span>
-                      </span>
+                        <h3 className="h3 card-title">{a.title}</h3>
+                      </div>
                     </Link>
                   </li>
                 ))}
