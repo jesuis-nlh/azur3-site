@@ -62,6 +62,16 @@ Known pitfalls (all hit during the build):
 - **`backdrop-filter`/`transform`/`filter` on an ancestor makes it the containing block for
   `position: fixed` children.** The mobile menu collapsed to 72px because of this.
 - Decorative elements that bleed off-canvas need `overflow-x: clip` on their section.
+- **Next 16 + `scroll-behavior: smooth`:** keep `data-scroll-behavior="smooth"` on `<html>`
+  (app/layout.tsx). Without it, every link navigation lands 300–440px down the new page —
+  Next 16 stopped neutralising smooth scrolling unless you opt in. Covered by e2e-public.
+- Scroll reveals never hide content that is on screen at load (`html.reveal-ready` is added
+  only after on-screen elements get `.is-in`); transitions live on `.is-in` only.
+- `experimental.inlineCss` is on: CSS ships inside the HTML. On slow 4G the separate CSS
+  request kept losing bandwidth races to the 10 preloaded fonts (LCP flapped 2.2–3.4 s →
+  stable 1.5 s). Cost: ~3× CSS in the HTML payload (style tag + RSC flight data), no CSS
+  caching across pages. Re-evaluate when the flag leaves experimental.
+- Focus indicators (skip link) appear instantly — no transitions on them.
 - Respect `prefers-reduced-motion`: the global block in `globals.css` neutralises transitions;
   canvas and orrery check the media query themselves.
 
