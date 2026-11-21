@@ -22,8 +22,24 @@ node qa/e2e-admin.mjs <outdir>               # needs a pending submission + an i
 Look at every screenshot you cite. Check: no horizontal overflow (shoot.mjs prints it),
 Vietnamese diacritics intact, demo badges present, empty states, focus rings, 390px tap targets.
 
-Lighthouse (install in a scratch dir, `CHROME_PATH=/opt/pw-browsers/chromium`): record the
-real numbers. Baseline at this commit: desktop perf 99–100, mobile perf 87–91 (LCP 3.5–3.9s,
-slow-4G simulation), a11y/best-practices/SEO 100, CLS 0.
+Lighthouse (install in a scratch dir, `CHROME_PATH=/opt/pw-browsers/chromium`): record the real numbers.
+
+**Measure with `--throttling-method=devtools`, not only the default simulation.** The default
+(Lantern) *models* slow 4G + 4× CPU from an unthrottled trace and charges the JS bundle's
+boot-up to LCP even when the LCP element painted before any JS ran. On this site the simulated
+home LCP was 3.7 s while the real trace showed LCP = FCP ≈ 0.28 s. Use the simulation for quick
+comparisons, devtools throttling for the numbers you report, and read
+`audits.metrics.details.items[0].observed*` before blaming a cause.
+
+Change one variable per measurement and revert experiments before the next one. In the LCP
+investigation, two plausible causes (hero animations, page-enter fade) had **no** effect;
+fonts were worth ~0.5 s; the real culprits were (1) the orrery re-rendering React 30×/s and
+(2) a 700 ms delay on the LCP paragraph's fade-in. Final, devtools-throttled: see
+`docs/QA-REPORT.md`.
+
+Suites: `npm test`, `qa/e2e-public.mjs`, `qa/e2e-admin.mjs`, `qa/e2e-video.mjs` (mutates the
+data dir), `qa/a11y-structure.mjs` (landmarks, one h1, heading order, names, labels + ARIA
+snapshots of lightbox/yearbook/timeline). Don't run Lighthouse while another server or browser
+suite is running — CPU contention skews the throttled numbers.
 
 Scorecards: score only what was inspected; list what wasn't.

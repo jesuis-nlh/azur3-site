@@ -58,6 +58,7 @@ Known pitfalls (all hit during the build):
 - **Never put `clip-path` on an element you observe** — IntersectionObserver treats a fully
   clipped box as invisible, so it never reveals. `mask` clips the child for that reason.
 - **Don't reveal above-the-fold LCP content** (hero images, article covers) — it delays LCP.
+  Entrance delays on the LCP element count in full: keep hero choreography under ~400 ms.
 - **`backdrop-filter`/`transform`/`filter` on an ancestor makes it the containing block for
   `position: fixed` children.** The mobile menu collapsed to 72px because of this.
 - Decorative elements that bleed off-canvas need `overflow-x: clip` on their section.
@@ -69,7 +70,10 @@ Known pitfalls (all hit during the build):
 `CosmicBackground` = CSS nebulae + one canvas (3 parallax star layers, twinkle, rare shooting
 star). Capped DPR 1.5, ~40fps, paused when hidden, static frame for reduced motion, fewer stars
 on coarse pointers. The `cosmos__veil` keeps text contrast — don't remove it.
-`Orrery` is SVG + one rAF (~30fps), pauses on hover and off-screen. No WebGL: the depth effect
+`Orrery` is SVG rendered once by React; one rAF loop (~30fps, started on idle) writes each
+star group's `transform`/`opacity` directly — **never drive per-frame animation through React
+state** (it doubled main-thread work and cost 0.7 s of LCP). Hover/focus visuals are CSS.
+Pauses on hover/focus, off-screen, hidden tab; static under reduced motion. No WebGL: the depth effect
 (stars dim/shrink behind the core) is computed in 2D. Add Three.js only with a storytelling
 reason and a static fallback.
 
