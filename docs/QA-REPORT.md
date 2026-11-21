@@ -113,7 +113,7 @@ placeholder plates were memories would be dishonest.
 | Motion & interaction | 10 | 9 | purposeful, reduced-motion safe, 41 interaction checks pass |
 | Information architecture & discovery | 10 | 9 | timeline filters, search, cross-links, year jumps |
 | Responsive & accessibility | 10 | 9 | Lighthouse a11y 100 ×14; structural audit 17/17; 4 widths; no manual screen-reader pass |
-| Technical quality & performance | 10 | 9 | 105 automated checks green; mobile LCP ≤ 2.4 s; TBT up to 520 ms; file store needs a persistent disk |
+| Technical quality & performance | 10 | 9 | 103 automated checks green (14 unit, 41 public, 19 admin, 12 video, 17 a11y pages); mobile LCP ≤ 2.4 s; TBT up to 520 ms; file store needs a persistent disk |
 | Vietnamese copy & factual accuracy | 5 | 4 | no invented facts; copy not yet reviewed by a classmate |
 | **Total** | 100 | **81** | below the 90 gate |
 
