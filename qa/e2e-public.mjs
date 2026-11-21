@@ -61,9 +61,22 @@ ok(await p.isVisible("text=Không có sự kiện nào khớp"), "empty state ap
 await p.click("text=Xoá bộ lọc");
 ok(await p.$$eval(".tl-event", (l) => l.length) === total, "clear filters restores all events");
 await p.click(".timeline__years a >> nth=2");
-await p.waitForTimeout(900);
-const yearTop = await p.$eval("#nam-2024-2025", (e) => e.getBoundingClientRect().top);
-ok(yearTop < 400, `year jump lands on 2024–2025 (top=${Math.round(yearTop)})`);
+// smooth scrolling takes a variable time: wait until the position has settled, then check it
+const yearTop = await p.evaluate(async () => {
+  // must first move (scroll may start late on a busy main thread), then hold still
+  const el = document.querySelector("#nam-2024-2025");
+  const start = Math.round(el.getBoundingClientRect().top);
+  let last = start, moved = false;
+  for (let i = 0; i < 40; i++) {
+    await new Promise((r) => setTimeout(r, 150));
+    const t = Math.round(el.getBoundingClientRect().top);
+    if (t !== start) moved = true;
+    if (moved && t === last) return t;
+    last = t;
+  }
+  return last; // never moved or never settled within 6 s → the assertion reports it
+});
+ok(yearTop > 0 && yearTop < 400, `year jump lands on 2024–2025 (settled top=${yearTop})`);
 
 // lightbox
 await p.goto(B + "/ky-uc/buoi-dau");
