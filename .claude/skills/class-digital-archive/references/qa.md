@@ -34,7 +34,7 @@ comparisons, devtools throttling for the numbers you report, and read
 Change one variable per measurement and revert experiments before the next one. In the LCP
 investigation, two plausible causes (hero animations, page-enter fade) had **no** effect;
 fonts were worth ~0.5 s; the real culprits were (1) the orrery re-rendering React 30×/s and
-(2) a 700 ms delay on the LCP paragraph's fade-in. Final, devtools-throttled: see
+(2) a 700 ms delay on the LCP paragraph's fade-in. Final, devtools-throttled (mobile LCP 1.7–2.4 s on all 7 pages, a11y/BP/SEO 100): see
 `docs/QA-REPORT.md`.
 
 Suites: `npm test`, `qa/e2e-public.mjs`, `qa/e2e-admin.mjs`, `qa/e2e-video.mjs` (mutates the
