@@ -19,13 +19,23 @@ export default function Interactions() {
   const haloRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
 
-  // Scroll reveals — re-scan on every route change
+  // Scroll reveals — re-scan on every route change.
+  // Elements already in the viewport are marked visible *before* hiding is enabled
+  // (html.reveal-ready), so above-the-fold content never disappears or waits for JS.
   useEffect(() => {
     const els = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-in)"));
     if (!("IntersectionObserver" in window)) {
       els.forEach((el) => el.classList.add("is-in"));
       return;
     }
+    const vh = window.innerHeight;
+    const below: HTMLElement[] = [];
+    for (const el of els) {
+      const r = el.getBoundingClientRect();
+      if (r.top < vh && r.bottom > 0) el.classList.add("is-in");
+      else below.push(el);
+    }
+    document.documentElement.classList.add("reveal-ready");
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
@@ -37,7 +47,7 @@ export default function Interactions() {
       },
       { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
     );
-    els.forEach((el) => io.observe(el));
+    below.forEach((el) => io.observe(el));
     return () => io.disconnect();
   }, [pathname]);
 

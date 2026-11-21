@@ -13,7 +13,7 @@ export default async function YearbookPage() {
   const img = (n: number) => {
     const a = albums[n % Math.max(1, albums.length)];
     const c = a ? albumCover(a) : undefined;
-    return c ? { src: c.preview ?? c.src, alt: c.alt, caption: c.caption, tone: c.tone } : undefined;
+    return c ? { src: c.preview ?? c.src, thumb: c.thumb, width: c.width, alt: c.alt, caption: c.caption, tone: c.tone } : undefined;
   };
   const roman = ["I", "II", "III"];
 

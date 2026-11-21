@@ -42,10 +42,6 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi" className={`${display.variable} ${body.variable} ${mono.variable}`} suppressHydrationWarning>
-      <head>
-        {/* Reveal animations only hide content once JS is confirmed */}
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
-      </head>
       <body>
         <a className="skip-link" href="#noi-dung">Chuyển đến nội dung</a>
         {children}

@@ -11,7 +11,7 @@ export interface Spread {
   title: string;
   accent?: string;
   text: string[];
-  image?: { src: string; alt: string; caption?: string; tone?: string };
+  image?: { src: string; thumb?: string; width?: number; alt: string; caption?: string; tone?: string };
   list?: { label: string; href: string; meta?: string }[];
   thumbs?: { src: string; alt: string; href: string }[];
   cta?: { label: string; href: string };
@@ -115,7 +115,15 @@ export default function Yearbook({ spreads }: { spreads: Spread[] }) {
             {s.image ? (
               <figure className="plate yearbook__figure">
                 <div className="plate__frame" style={{ background: s.image.tone }}>
-                  <img src={s.image.src} alt={s.image.alt} loading="lazy" />
+                  <img
+                    src={s.image.src}
+                    srcSet={s.image.thumb ? `${s.image.thumb} 640w, ${s.image.src} ${s.image.width ?? 1600}w` : undefined}
+                    sizes="(min-width: 900px) 40vw, 100vw"
+                    alt={s.image.alt}
+                    loading="eager" // only the visible spread is rendered, so its image is always needed now
+                    fetchPriority="high"
+                    decoding="async"
+                  />
                 </div>
                 {s.image.caption ? <figcaption>{s.image.caption}</figcaption> : null}
               </figure>

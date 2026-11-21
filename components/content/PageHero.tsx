@@ -19,7 +19,7 @@ export default function PageHero({
             </h1>
           </div>
           {lede || aside ? (
-            <div className="page-hero__aside fade-in" style={{ "--delay": "380ms" } as React.CSSProperties}>
+            <div className="page-hero__aside fade-in" style={{ "--delay": "160ms" } as React.CSSProperties}>
               {lede ? <p className="lede">{lede}</p> : null}
               {aside}
             </div>
