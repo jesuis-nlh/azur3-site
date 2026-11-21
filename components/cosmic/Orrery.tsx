@@ -14,7 +14,7 @@ export interface OrreryStar {
   milestone?: boolean;
 }
 
-const W = 760, H = 760, CX = W / 2, CY = H / 2;
+const W = 760, CX = W / 2, CY = 380;
 const RINGS = [
   { rx: 170, ry: 58 },
   { rx: 262, ry: 90 },
@@ -22,6 +22,10 @@ const RINGS = [
 ];
 const TILT = (-16 * Math.PI) / 180;
 const YEARS = ["2022–23", "2023–24", "2024–25"];
+/** inner orbits travel faster, like real ones */
+const SPEED = [1.6, 1.15, 0.85];
+/** full turns per millisecond at speed 1 (≈ one turn every ~29 s) */
+const RATE = 0.000035;
 
 function place(ring: number, theta: number) {
   const { rx, ry } = RINGS[ring];
@@ -33,48 +37,79 @@ function place(ring: number, theta: number) {
   };
 }
 
+function starTransform(s: OrreryStar, phase: number) {
+  const theta = s.t * Math.PI * 2 - Math.PI / 2 + phase * (SPEED[s.ring] ?? 1) * Math.PI * 2;
+  const p = place(s.ring, theta);
+  const near = (p.depth + 1) / 2; // 0 behind … 1 in front
+  return {
+    transform: `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)}) scale(${(0.65 + near * 0.55).toFixed(3)})`,
+    opacity: (0.3 + near * 0.7).toFixed(3),
+  };
+}
+
 /**
  * A dimensional "orrery": three orbits for three school years, each event a
- * star placed by its month. Stars travel slowly; those passing behind the
- * centre dim and shrink, giving depth without WebGL. Pauses on hover/focus,
- * static under prefers-reduced-motion. Every star is a real link.
+ * star placed by its month. Stars passing behind the core dim and shrink,
+ * giving depth without WebGL.
+ *
+ * Performance: React renders the SVG once. A single rAF loop moves the stars
+ * by writing each star group's `transform`/`opacity` attributes directly —
+ * no React re-render per frame. The loop starts only once the browser is idle
+ * (so it never competes with first render), runs at ~30 fps, and pauses on
+ * hover/focus, when off-screen, when the tab is hidden, and entirely under
+ * prefers-reduced-motion. Hover/focus visuals are CSS; every star is a link.
  */
 export default function Orrery({ stars, center = "12A3" }: { stars: OrreryStar[]; center?: string }) {
-  const [phase, setPhase] = useState(0);
   const [active, setActive] = useState<number | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const nodes = useRef<(SVGGElement | null)[]>([]);
   const paused = useRef(false);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let raf = 0, last = performance.now(), visible = true;
+    let raf = 0, last = 0, phase = 0, visible = true, started = false;
     const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; });
-    const el = document.querySelector(".orrery");
-    if (el) io.observe(el);
+    if (rootRef.current) io.observe(rootRef.current);
+
     const loop = (t: number) => {
       raf = requestAnimationFrame(loop);
+      if (!last) { last = t; return; }
       const dt = t - last;
-      if (dt < 33) return; // ~30fps is plenty for a slow orbit
+      if (dt < 33) return;
       last = t;
-      if (!paused.current && visible && !document.hidden) setPhase((p) => p + dt * 0.000035);
+      if (paused.current || !visible || document.hidden) return;
+      phase += Math.min(dt, 100) * RATE;
+      stars.forEach((s, i) => {
+        const g = nodes.current[i];
+        if (!g) return;
+        const { transform, opacity } = starTransform(s, phase);
+        g.setAttribute("transform", transform);
+        g.setAttribute("opacity", opacity);
+      });
     };
-    raf = requestAnimationFrame(loop);
-    return () => { cancelAnimationFrame(raf); io.disconnect(); };
-  }, []);
+    const start = () => { if (!started) { started = true; raf = requestAnimationFrame(loop); } };
+    // Safari has no requestIdleCallback; fall back to a short timeout there
+    const hasIdle = "requestIdleCallback" in window;
+    const handle = hasIdle ? window.requestIdleCallback(start, { timeout: 2500 }) : window.setTimeout(start, 1200);
 
-  const positioned = stars.map((s, i) => {
-    // inner rings move faster, like real orbits
-    const speed = [1.6, 1.15, 0.85][s.ring] ?? 1;
-    const theta = s.t * Math.PI * 2 - Math.PI / 2 + phase * speed * Math.PI * 2;
-    return { ...s, i, ...place(s.ring, theta) };
-  });
-  const sorted = [...positioned].sort((a, b) => a.depth - b.depth);
-  const act = active === null ? null : positioned[active];
+    return () => {
+      cancelAnimationFrame(raf);
+      io.disconnect();
+      if (hasIdle) window.cancelIdleCallback(handle);
+      else window.clearTimeout(handle);
+    };
+  }, [stars]);
+
+  const act = active === null ? null : stars[active];
 
   return (
     <div
+      ref={rootRef}
       className="orrery"
       onPointerEnter={() => { paused.current = true; }}
       onPointerLeave={() => { paused.current = false; setActive(null); }}
+      onFocus={() => { paused.current = true; }}
+      onBlur={() => { paused.current = false; }}
     >
       <svg viewBox={`0 ${CY - 245} ${W} 490`} role="group" aria-label="Quỹ đạo ký ức: các sự kiện theo ba năm học">
         <defs>
@@ -90,62 +125,54 @@ export default function Orrery({ stars, center = "12A3" }: { stars: OrreryStar[]
           </radialGradient>
         </defs>
 
-        {/* back halves of the rings */}
         {RINGS.map((r, i) => (
           <ellipse key={`b${i}`} cx={CX} cy={CY} rx={r.rx} ry={r.ry} transform={`rotate(-16 ${CX} ${CY})`}
             fill="none" stroke="rgba(169,174,200,.18)" strokeDasharray={i === 2 ? "2 6" : undefined} />
         ))}
 
-        {/* stars behind the core */}
-        {sorted.filter((s) => s.depth < 0).map((s) => <StarNode key={s.slug} s={s} activeIdx={active} setActive={setActive} />)}
-
         <circle cx={CX} cy={CY} r={150} fill="url(#orrery-core)" />
-        <text x={CX} y={CY + 14} textAnchor="middle" className="orrery__center">{center}</text>
 
-        {/* front arcs drawn over the core for depth */}
+        {/* Stars: positioned by transform; behind-the-core stars are dimmed and shrunk */}
+        {stars.map((s, i) => {
+          const initial = starTransform(s, 0);
+          const r = s.milestone ? 4.6 : 3;
+          return (
+            <Link
+              key={s.slug}
+              href={`/dong-thoi-gian/${s.slug}`}
+              aria-label={`${s.title}, ${s.date}`}
+              className={`orrery__star${s.milestone ? " is-milestone" : ""}`}
+              onMouseEnter={() => setActive(i)}
+              onFocus={() => setActive(i)}
+              onBlur={() => setActive(null)}
+            >
+              <g ref={(el) => { nodes.current[i] = el; }} transform={initial.transform} opacity={initial.opacity}>
+                <circle r={22} fill="transparent" />
+                <circle className="orrery__glow" r={r * 5.5} fill="url(#orrery-glow)" />
+                <circle className="orrery__dot" r={r} fill={s.milestone ? "#F7E3B5" : "#F4F3FF"} />
+                <circle className="orrery__ring" r={r * 3.4} fill="none" stroke="#E7C27A" />
+              </g>
+            </Link>
+          );
+        })}
+
+        {/* core label and front arcs sit above the stars for depth */}
+        <text x={CX} y={CY + 14} textAnchor="middle" className="orrery__center">{center}</text>
         {RINGS.map((r, i) => (
           <path key={`f${i}`}
             d={`M ${CX - r.rx} ${CY} A ${r.rx} ${r.ry} 0 0 0 ${CX + r.rx} ${CY}`}
             transform={`rotate(-16 ${CX} ${CY})`}
-            fill="none" stroke="rgba(244,243,255,.34)" />
+            fill="none" stroke="rgba(244,243,255,.34)" pointerEvents="none" />
         ))}
-
-        {RINGS.map((r, i) => {
+        {RINGS.map((_, i) => {
           const p = place(i, Math.PI * 0.6);
           return <text key={`y${i}`} x={p.x - 8} y={p.y + 16} textAnchor="end" className="orrery__year">{YEARS[i]}</text>;
         })}
-
-        {sorted.filter((s) => s.depth >= 0).map((s) => <StarNode key={s.slug} s={s} activeIdx={active} setActive={setActive} />)}
       </svg>
 
       <div className={`orrery__label${act ? " is-on" : ""}`} aria-live="polite">
         {act ? (<><span className="coord">{act.date}</span><span className="orrery__title">{act.title}</span></>) : null}
       </div>
     </div>
-  );
-}
-
-function StarNode({ s, activeIdx, setActive }: {
-  s: OrreryStar & { i: number; x: number; y: number; depth: number };
-  activeIdx: number | null;
-  setActive: (i: number | null) => void;
-}) {
-  const near = (s.depth + 1) / 2; // 0 behind … 1 in front
-  const r = (s.milestone ? 4.6 : 3) * (0.65 + near * 0.55);
-  const on = activeIdx === s.i;
-  return (
-    <Link
-      href={`/dong-thoi-gian/${s.slug}`}
-      aria-label={`${s.title}, ${s.date}`}
-      onMouseEnter={() => setActive(s.i)}
-      onFocus={() => setActive(s.i)}
-      onBlur={() => setActive(null)}
-      className="orrery__star"
-    >
-      <circle cx={s.x} cy={s.y} r={22} fill="transparent" />
-      {s.milestone || on ? <circle cx={s.x} cy={s.y} r={r * 5.5} fill="url(#orrery-glow)" opacity={on ? 1 : 0.55} /> : null}
-      <circle cx={s.x} cy={s.y} r={on ? r * 1.6 : r} fill={s.milestone ? "#F7E3B5" : "#F4F3FF"} opacity={0.35 + near * 0.65} />
-      {on ? <circle cx={s.x} cy={s.y} r={r * 3.4} fill="none" stroke="#E7C27A" strokeOpacity=".8" /> : null}
-    </Link>
   );
 }

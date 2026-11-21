@@ -26,7 +26,13 @@
 .orrery__year { font-family: var(--font-mono); font-size: 13px; fill: var(--fg-faint); letter-spacing: 0.08em; }
 .orrery__star { cursor: pointer; }
 .orrery__star:focus-visible { outline: none; }
-.orrery__star:focus-visible circle:last-child { stroke: var(--focus); stroke-width: 2; }
+.orrery__glow, .orrery__ring { opacity: 0; transition: opacity var(--d-med) var(--ease-out); }
+.orrery__dot { transition: transform var(--d-med) var(--ease-out); }
+.orrery__star.is-milestone .orrery__glow { opacity: 0.55; }
+.orrery__star:hover .orrery__glow, .orrery__star:focus-visible .orrery__glow { opacity: 1; }
+.orrery__star:hover .orrery__ring { opacity: 0.85; }
+.orrery__star:hover .orrery__dot, .orrery__star:focus-visible .orrery__dot { transform: scale(1.6); }
+.orrery__star:focus-visible .orrery__ring { opacity: 1; stroke: var(--focus); stroke-width: 2; }
 .orrery__label { position: absolute; left: 50%; bottom: 2%; translate: -50% 0; display: grid; justify-items: center; gap: 4px; min-height: 3.2em; text-align: center; opacity: 0; transition: opacity var(--d-med); pointer-events: none; width: 90%; }
 .orrery__label.is-on { opacity: 1; }
 .orrery__title { font-family: var(--font-display); font-size: 1.35rem; font-style: italic; color: var(--memory); }

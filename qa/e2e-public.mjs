@@ -33,7 +33,12 @@ const bx = await p.$eval(".home-hero__ctas .btn--primary", (b) => getComputedSty
 ok(Math.abs(parseFloat(bx)) > 1, `primary button is magnetic (--bx=${bx.trim()})`);
 ok(await p.evaluate(() => getComputedStyle(document.body).cursor) !== "none", "native cursor is never hidden");
 
-// orrery hover pauses and labels
+// orrery moves (after idle start), then hover pauses and labels
+const tf = () => p.$eval(".orrery__star g", (g) => g.getAttribute("transform"));
+const t0 = await tf();
+await p.mouse.move(5, 880); // keep the pointer off the orrery so it is not paused
+await p.waitForTimeout(3500);
+ok(t0 !== (await tf()), "orrery stars travel along their orbits");
 const star = await p.$(".orrery__star");
 await star.hover({ force: true });
 await p.waitForTimeout(200);
@@ -148,9 +153,10 @@ await r.mouse.move(600, 400);
 ok(!(await r.evaluate(() => document.documentElement.classList.contains("has-halo"))), "reduced motion: cursor effects off");
 const hiddenReveal = await r.$$eval("[data-reveal]", (l) => l.filter((e) => getComputedStyle(e).opacity === "0").length);
 ok(hiddenReveal === 0, "reduced motion: all content visible without scrolling");
-const before = await r.$eval(".orrery__star circle:last-child", (c) => c.getAttribute("cx"));
+const before = await r.$eval(".orrery__star g", (g) => g.getAttribute("transform"));
 await r.waitForTimeout(1200);
-ok(before === (await r.$eval(".orrery__star circle:last-child", (c) => c.getAttribute("cx"))), "reduced motion: orrery is static");
+await r.waitForTimeout(2500);
+ok(before === (await r.$eval(".orrery__star g", (g) => g.getAttribute("transform"))), "reduced motion: orrery is static");
 await r.screenshot({ path: `${out}/p2-reduced-motion.png` });
 await rm.close();
 

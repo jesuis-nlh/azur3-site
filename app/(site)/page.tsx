@@ -48,22 +48,22 @@ export default async function Home() {
               <span className="rise"><span style={{ "--delay": "120ms" } as React.CSSProperties}>Hơn cả</span></span>
               <span className="rise"><span style={{ "--delay": "260ms" } as React.CSSProperties}><em>một lớp học.</em></span></span>
             </h1>
-            <p className="lede fade-in" style={{ "--delay": "700ms" } as React.CSSProperties}>
+            <p className="lede fade-in" style={{ "--delay": "200ms" } as React.CSSProperties}>
               Ba năm của lớp {site.className}, khoá {site.cohort.start}–{site.cohort.end}, được gìn giữ như một bầu trời:
               mỗi ký ức là một vì sao, mỗi câu chuyện là một chòm sao.
             </p>
-            <div className="home-hero__ctas fade-in" style={{ "--delay": "900ms" } as React.CSSProperties}>
+            <div className="home-hero__ctas fade-in" style={{ "--delay": "380ms" } as React.CSSProperties}>
               <Link href="/dong-thoi-gian" className="btn btn--primary" data-magnetic>
                 Bước vào kho lưu trữ <Glyph name="arrow" className="arrow" />
               </Link>
               <Link href="/ky-uc" className="btn" data-magnetic>Xem ký ức</Link>
             </div>
           </div>
-          <div className="home-hero__visual fade-in" style={{ "--delay": "300ms" } as React.CSSProperties}>
+          <div className="home-hero__visual fade-in" style={{ "--delay": "150ms" } as React.CSSProperties}>
             <Orrery stars={stars} center={site.className} />
           </div>
         </div>
-        <div className="shell home-hero__foot fade-in" style={{ "--delay": "1100ms" } as React.CSSProperties}>
+        <div className="shell home-hero__foot fade-in" style={{ "--delay": "550ms" } as React.CSSProperties}>
           <p className="coord">16°03′N 108°12′E</p>
           <p className="coord">{site.cohort.start} → {site.cohort.end}</p>
           <p className="coord home-hero__hint">Di chuột lên một vì sao để đọc tên ký ức</p>
