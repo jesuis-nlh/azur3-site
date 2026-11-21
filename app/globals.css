@@ -109,7 +109,7 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 .skip-link {
   position: fixed; left: var(--s-4); top: var(--s-4); z-index: 100;
   padding: var(--s-2) var(--s-4); background: var(--c-star); color: var(--c-void);
-  transform: translateY(-200%); transition: transform var(--d-fast);
+  transform: translateY(-200%); /* no transition: a focus indicator must appear instantly, even while the page hydrates */
 }
 .skip-link:focus { transform: none; }
 

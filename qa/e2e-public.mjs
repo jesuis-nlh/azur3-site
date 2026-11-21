@@ -121,6 +121,22 @@ ok(!(await p.$("#c-code")), "removal requests need no contributor code");
 // search
 await p.goto(B + "/tim-kiem?q=ky+yeu");
 ok((await p.$$eval(".search-hit", (l) => l.length)) > 0, "search without diacritics returns results");
+
+// client-side navigation: new pages open at the top; Back restores the previous position
+// (regression: Next 16 needs <html data-scroll-behavior="smooth"> or it lands mid-page)
+await p.goto(B + "/");
+await p.evaluate(() => window.scrollTo({ top: 1400, behavior: "instant" }));
+await p.waitForTimeout(300);
+await p.click(".primary-nav a:has-text('Dòng thời gian')");
+await p.waitForURL("**/dong-thoi-gian");
+await p.waitForTimeout(1000);
+const nav = await p.evaluate(() => ({ y: scrollY, h1: document.querySelector("main h1").getBoundingClientRect().top }));
+ok(nav.y === 0 && nav.h1 > 0, `link navigation opens the new page at the top (scrollY=${nav.y})`);
+await p.goBack();
+await p.waitForURL(B + "/");
+await p.waitForTimeout(1000);
+const back = await p.evaluate(() => scrollY);
+ok(Math.abs(back - 1400) < 80, `Back restores the previous scroll position (scrollY=${back})`);
 await desk.close();
 
 // ── Mobile / touch ────────────────────────────────────

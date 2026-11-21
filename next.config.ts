@@ -11,7 +11,11 @@ const config: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   images: { formats: ["image/avif", "image/webp"] },
-  experimental: { serverActions: { bodySizeLimit: "60mb" } },
+  experimental: {
+    serverActions: { bodySizeLimit: "60mb" },
+    // CSS arrives with the HTML: removes the render-blocking request that lost bandwidth races to font preloads on slow networks
+    inlineCss: true,
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
